@@ -51,10 +51,59 @@ $ sudo systemctl restart apache2
 ```
 でCGIを有効にしてApache2を再起動します。
 
-## 管理パネルの表示
-
-http://<ZYNQ LinuxのIPアドレス>/zynq-admin/
+--------
+# 使い方
+## Adminパネルの表示
+http://<*ZYNQ LinuxのIPアドレス*>/zynq-admin/
 で、Web画面にシステム情報を表示することができます。
+
+## OS基本情報
+テーブルの上部には
++ OSの種類と、カーネルのバージョンを表示します(unameコマンド)
++ ZYNQ Linuxの時刻(dateコマンド)
++ ホスト名(hostnameコマンド)
++ CPU情報(/proc/cpuinfo)
+
+が表示されます。
+![image](https://user-images.githubusercontent.com/10442205/165068874-d280aa35-6e7e-43d3-b3e0-1bcb56808b6b.png)
+
+「NTP同期」ボタンを押すと、NTPサーバに接続して時刻を調整します。
+
+## CPU、メモリ、ディスクの負荷
+テーブルの下部には、
++ CPUの負荷(vmstatコマンド)
++ メモリの容量と状態(/proc/meminfo)
++ ディスクの容量と空き(dfコマンド)
+
+が表示されます。
+![image](https://user-images.githubusercontent.com/10442205/165069275-5151e4dc-26fd-40b0-a395-19c11c80ac2e.png)
+
+## システムの更新
+Web画面の中からboot.binの更新を行うことができます。
+
+まず、www-dataユーザ(Apache2のCGI実行ユーザ)のパスワードをテキストボックスに入力し、下の画面に表示されている「boot.binまたは.bitの送信」ボタンを押すと、
+![image](https://user-images.githubusercontent.com/10442205/165069645-cc4d59b5-a343-4dea-9535-314dfe40b585.png)
+
+次のダイアログが開きます。ここで「ファイルを選択」ボタンを押して、.binファイルか、.bitファイルを選びます。
+
+![image](https://user-images.githubusercontent.com/10442205/165071106-06daa98d-f94b-4ae4-8f22-4b2a31e4a8f1.png)
+
+.bitファイルを選ぶと、Vivadoで生成したBitStreamファイルを送信し、ZYNQ Linux上でbootgenを起動してboot.binを作って、SDカードの第一パーティションにコピーします。ホストPCでbootgenを行うのが面倒な場合は.bitファイルを送ってください。
+
+![.bitを送った場合](https://user-images.githubusercontent.com/10442205/165070476-6d761943-0c43-42e3-afcf-0830d579c330.png)
+
+.binファイルを選ぶと、ホストPCのVivadoで作ったboot.binをSDカードの第一パーティションにコピーします。bootgenはPCでやりたい場合や、過去に作ったboot.binを変えて試してみたいときには、.binを送ってください。
+
+![.binを送った場合](https://user-images.githubusercontent.com/10442205/165070605-a68f752a-13a3-43c8-b07e-7f110e38b0ff.png)
+
+## 再起動
+「再起動」ボタンを押すと、確認のダイアログが出たあとリブートします。
+
+![image](https://user-images.githubusercontent.com/10442205/165070924-fab045e4-1531-4ec8-ac3f-8a1b6fa6841d.png)
+
+通常のZYNQ Linuxならば約1分で再起動が完了します。
+
+![image](https://user-images.githubusercontent.com/10442205/165070953-6d3c66e5-f688-4518-bc07-eb6ad5a285bd.png)
 
 --------
 
