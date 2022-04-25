@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset="utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript; charset=utf-8" />
+<title>ZYNQ Control Panel</title>
+  <script type="text/javascript" src="./js/jquery-2.1.3.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="./css/jquery-ui.min.css" />
+  <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="./js/zynqadmin.js"></script>
+  <style type="text/css">
+  <!--
+		table.sysinfo{
+		  width:100%;
+		  max-width:640px;
+		  border-collapse:collapse;
+		}
+		table.sysinfo td{
+		  border:1px solid #888888;
+		  background:#ffffff;
+		}
+   -->
+  </style>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+
+<h1>ZYNQ管理者パネル</h1>
+<h2>システム情報</h2>
+<table class="sysinfo">
+<tr>
+  <td>OS</td>
+  <td><span id="os"></span><br><span id="kernel"></span></td>
+</tr>
+<tr>
+  <td>システム時刻</td>
+  <td><span id="datetime"></span> <span id="date_error"></span><br><button onclick="ntpdate();">NTP同期</button></td>
+</tr>
+<tr>
+  <td>ホスト名</td>
+  <td><span id="hostname"></span> <span id="date_error"></span></td>
+</tr>
+<tr>
+  <td>CPU情報</td>
+  <td><span id="cpuinfo"></span> <span id="date_error"></span></td>
+</tr>
+<tr>
+  <td>CPU負荷</td>
+  <td>ユーザ時間:<span id="cpu_us"></span><br>システム時間:<span id="cpu_sy"></span><br>アイドル時間:<span id="cpu_id"></span><br>IO待ち時間:<span id="cpu_wa"></span></td>
+</tr>
+<tr>
+  <td>メモリ情報</td>
+  <td>Total:<span id="memtotal"></span><br>Free:<span id="memfree"></span><br>Availale:<span id="memavailable"></span><br>Buffer:<span id="membuffer"></span><br>Chache:<span id="memcache"></span><br></td>
+</tr>
+<tr>
+  <td>ディスク情報</td>
+  <td><span id="diskinfo"></span></td>
+</tr>
+</table>
+
+<h2>システムの更新</h2>
+<button onclick="FileUpload();">boot.binまたは.bitの送信</button>
+<button onclick="Reboot();">再起動</button>
+<legend>www-dataユーザのパスワード</legend><input type="password" id="password" maxlength="20" /><br>
+
+<div id="file_upload_dialog" style="display:none">
+	<input type="file" id="file_uploader"/>
+</div>
+<div id="input_dialog"></div>
+<div id="dialog"></div>
+<div id="dialog_message"></div>
+<div id="reboot_dialog"></div>
+
+<hr>
+<p>&copy; 2022 TokushuDenshiKairo Inc., <a href="https://twitter.com/nahitafu" target="_blank">@nahitafu</a> All rights reserved</p>
+</div>
+</body>
+</html> 
