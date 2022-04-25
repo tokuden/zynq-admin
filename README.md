@@ -13,8 +13,8 @@ ZYNQ Linuxの時計、NTP同期、CPUの使用率、メモリ使用量、ディ�
 ## 動作環境
 Ubuntu 14.04LTS または Ubuntu 18.04LTSが動作しているZYNQ Linux
 
-## インストール方法
-このツールのインストール自体は難しくありません。/var/www/htmlフォルダに、このレポジトリをダウンロードするだけです。
+## ダウンロードとインストール
+ZYNQ Admin panelのインストールは、/var/www/html 配下の任意のフォルダにこのレポジトリをダウンロードするだけです。
 
 ```
 cd /var/www/html
@@ -26,10 +26,8 @@ git clone https://github.com/tokuden/zynq-admin.git
 
 まず、/etc/apache2/sites-available/000-default.conf を書き換えます。
 
-
-CGIを実行するディレクトリには+ExecCgiの指定が必要です。また、AddHandlerで.cgiの拡張子がCGIであることを指示してください。
+CGIを実行するディレクトリには+ExecCgiの指定が必要です。また、AddHandlerで.cgiの拡張子がCGIであることを指示してください。  
 ディレクトリは環境に合わせて書き換えてください。
-
 
 ```
 <VirtualHost *:80>
@@ -60,19 +58,20 @@ http://<ZYNQ LinuxのIPアドレス>/zynq-admin/
 
 --------
 
-# セットアップ
-システム情報を表示するだけであれば、git cloneしてCGIを許可するだけ使えますが、ZYNQのシステムの設定を変更するには、CGIから管理者権限が必要なコマンドが使えるようにしなければなりません。そのためには設定ファイルをいくつか変更する必要があります。
+# 管理コマンドを使うためのセットアップ
+システム情報を表示するだけであれば、git cloneとCGIの許可だけ使えますが、システムの設定を変更するには、CGIから管理者権限が必要なコマンドが使えるようにしなければなりません。  そのためには設定ファイルをいくつか変更する必要があります。
 
 ## Webから再起動ができるようにする
-Linuxの再起動は/sbin/rebootというプログラムで行われます。(Ubuntu 18ではrebootは/bin/systemctlへのシンボリックリンク)
+Linuxの再起動は/sbin/rebootというプログラムで行われます。  
+※実は、Ubuntu 18ではrebootは/bin/systemctlへのシンボリックリンクなのです。
 
-rebootの実行にはroot権限が必要ですが、CGIで動くプログラムはwww-dataというユーザの権限で動くので、rebootをCGIから実行するためには、/etc/sudoersに記述を追加しなければなりません。以下、CGIからrebootを行うための方法を説明します。
+rebootの実行にはroot権限が必要ですが、CGIで動くプログラムはwww-dataというユーザの権限で動くので、rebootをCGIから実行するためには、/etc/sudoersに記述を追加しなければなりません。  以下、CGIからrebootを行うための方法を説明します。
 
 ## /etc/sudoersを書き換えて管理者コマンドをCGIから実行できるようにする
 
-管理者以外の一般ユーザ(ApacheのCGIも含む)から管理者権限のコマンドを実行できるようにするには、/etc/sudoersにその旨を記載します。/etc/sudoersを直接書き換えることはせず、visudoというツールを使います。
-
-使い方を誤ってsudoersを壊してしまうとシステム全体が使えなくなる危険があるので、注意深く作業してください。
+管理者以外の一般ユーザ(ApacheのCGIも含む)から管理者権限のコマンドを実行できるようにするには、/etc/sudoersにその旨を記載します。  
+使い方を誤ってsudoersを壊してしまうとシステム全体が使えなくなる危険があるので、/etc/sudoersを直接書き換えることはせず、visudoというツールを使います。  
+くれぐれも注意深く作業してください。
 
 まず、
 `sudo visudo`
@@ -98,12 +97,21 @@ www-data ALL=(ALL:ALL) /sbin/reboot, /bin/systemctl, /bin/cp, /bin/hostname
 
 なお、Ubuntu 18ではPingは管理者権限を必要としなくなったので追加する必要はなくなりました。
 
------
+## www-dataのパスワードを設定する
+デフォルトでは、www-dataというCGIユーザのパスワードは設定されていないので、www-dataからrootになることができません。
 
-# boot.binを更新できるようにする
-ZYNQの起動ファイルは"boot.bin"で、このファイルはSDカードの第一パーティションに書き込まれています。しかし、boot.binを作るたびにSDカードを抜き差ししてWindows PCに挿すのは非常に手間がかかるので、ZYNQ LinuxからSDカードが見えるようにしてコマンドで書き換えられるようにしましょう。
+```
+sudo passwd www-data
+```
 
-まず、` sudo mkdir /mnt `で、/mntというフォルダを作り、ここにSDカードの第一パーティションをマウントします。起動時に自動的にマウントするように、/etc/fstabを編集します。
+でwww-dataのパスワードを変更してください。
+
+## boot.binを更新できるようにする
+ZYNQの起動ファイルは"boot.bin"で、このファイルはSDカードの第一パーティションに書き込まれています。通常はVivadoでboot.binを作ったらSDカードに書き込むとされていますが、SDカードを抜き差ししてWindows PCに挿すのは非常に手間がかかるので、まさか、一回一回抜き差ししている人はいないと思いますが・・
+
+やはり、ZYNQのLinuxでSDカードをマウントして、コマンドで書き換えられるようにしましょう。
+
+まず、` sudo mkdir /mnt `で、/mntというフォルダを作り、ここにSDカードの第一パーティションをマウントするようにします。起動時に自動的にマウントするように/etc/fstabを編集します。
 
 ```
 # UNCONFIGURED FSTAB FOR BASE SYSTEM
@@ -112,17 +120,11 @@ ZYNQの起動ファイルは"boot.bin"で、このファイルはSDカードの�
 
 これで、起動時に/mntフォルダにSDカードの第一パーティションがマウントされるようになります。
 
-
-すが、このファイルは、通常はVivadoに含まれているbootgenというプログラムを使ってBitStreamにfsbl.elfとu-boot.elfを結合させて作ります。本プロジェクトにはbootgenのARM Linux版が含まれているので、Webフォーム上からBitStreamを送って、ZYNQ Linux上でboot.binを作り、SDカードを書き換えさせることが出来ます。
-
-
-
-
+## bootgenで使われるu-boot.elfとfsbl.elfはどこにある？
+本リポジトリでは、u-boot.elfとfsbl.elfのサンプルのものをcgi-bin/mkboot/の中にいれてあります。
+このu-boot.elfとfsbl.elfはXC7Z030用のものなので、実際に使い始める前にはユーザのシステムに合わせてu-boot.elfとfsbl.elfを置き換えるようにしてください。(そのうちアップロードできるようにします)
 
 ## NTPの同期ができるようにする
 現在時刻のところにあるボタン「Sync」を押すと、サーバ上でntpdateというプログラムが走り、時刻を同期します。
 
 ARM 32bit版 Ubuntu Linuxの14.04ではntpdateがありますが、Ubuntu 18.04にはデフォルトでは入っていません。Web上から時刻を同期するボタンを使えるようにするには、 ` apt install ntpdate ` でntpdateをインストールしておいてください。
-
-
-
