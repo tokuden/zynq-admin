@@ -19,6 +19,8 @@ foreach $data (split(/&/, $ENV{'QUERY_STRING'})) {
   $in{"$key"} = $value;
 }
 
+
+
 my ($sec, $min, $hour, $mday, $mon, $year);
 ($sec, $min, $hour, $mday, $mon, $year) = localtime($in{'lastModified'});
 $year += 1900;
@@ -55,6 +57,7 @@ if ($suffix eq '.bin') {
 
 my ($base_name, $dir, $suffix) = fileparse($in{'filename'}, '.bit');
 if ($suffix eq '.bit') {
+	unlink "./mkboot/boot.bin";
 	my $biffile = "/var/tmp/bootimage.bif";
 	open(OUT, "> $biffile");
 	print(OUT "the_ROM_image:\n");
@@ -65,13 +68,37 @@ if ($suffix eq '.bit') {
 	print(OUT "}\n");
 	close(OUT);
 	print("------boot.binを生成します------\n");
-	system("/home/share/bootgen -w -image /var/tmp/bootimage.bif -o i /home/share/boot.bin 2>&1");
-	system("ls -altr /home/share/boot.bin");
-	print("------/mntにコピーします------\n");
-	system("echo $in{'password'} | sudo -S cp -p /home/share/boot.bin /mnt/boot.bin 2>&1");
-	print("------/mntの状況------\n");
-	system("ls -altr /mnt/boot.bin");
+	system("./mkboot/bootgen -w -image /var/tmp/bootimage.bif -o i ./mkboot/boot.bin 2>&1");
+	chmod 0755, "./mkboot/boot.bin";
 	unlink $biffile;
+	if(!-f "./mkboot/boot.bin")
+	{
+		print("ERROR:boot.binの生成に失敗しました\n");
+		exit;
+	}
+	$generated_file_date = (stat "./mkboot/boot.bin")[9];
+	print("------/mntにコピーします------\n");
+	system("echo $in{'password'} | sudo -S cp --preserve=timestamps ./mkboot/boot.bin /mnt/boot.bin 2>&1");
+	print("\n");
+	print("------/mnt/boot.binの状況------\n");
+	if(!-f "/mnt/boot.bin")
+	{
+		print("ERROR:boot.binが/mntに見つかりません\n");
+		exit;
+	}
+	$copied_file_date = (stat "/mnt/boot.bin")[9];
+	if($generated_file_date != $copied_file_date)
+	{
+		print("ERROR:boot.binのコピーに失敗しました\n");
+		exit;
+	}
+
+	($sec, $min, $hour, $mday, $mon, $year) = localtime($generated_file_date);
+	$year += 1900;
+	$mon += 1;
+	my $filesize = -s "/mnt/boot.bin";
+	printf("ファイルサイズ %d\n", $filesize);
+	printf("ファイル日付 %04d/%02d/%02d %02d:%02d:%02d\n", $year ,$mon, $mday, $hour, $min, $sec);
 }
 
 unlink "/var/tmp/$in{'filename'}";
