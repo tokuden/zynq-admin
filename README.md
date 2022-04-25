@@ -85,7 +85,7 @@ Web画面の中からboot.binの更新を行うことができます。
 
 まず、www-dataユーザ(Apache2のCGI実行ユーザ)のパスワードをテキストボックスに入力し、下の画面に表示されている「boot.binまたは.bitの送信」ボタンを押すと、
 
-![image](https://user-images.githubusercontent.com/10442205/165069645-cc4d59b5-a343-4dea-9535-314dfe40b585.png)
+![image](https://user-images.githubusercontent.com/10442205/165071385-757cefc3-9bf4-489e-8715-63d0d3726132.png)
 
 次のダイアログが開きます。ここで「ファイルを選択」ボタンを押して、.binファイルか、.bitファイルを選びます。
 
