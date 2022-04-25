@@ -4,7 +4,7 @@
 
 ZYNQ Linuxの時計、NTP同期、CPUの使用率、メモリ使用量、ディスク使用量などを見ることができ、boot.binの書き換えや再起動もできます。
 
-![ZYNQ Adminの画面](image1.png)
+[<img src="./doc/image1.png" alt="ZYNQ Adminの画面" width="320">](./doc/image1.png)
 
 再利用がしやすいように、非常に質素なデザインとシンプルなJavaScriptで作られています。このWeb画面にお好みのCSSを適用したりして、お客様のシステムに組み込んで使ってください。
 
