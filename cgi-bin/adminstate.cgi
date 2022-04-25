@@ -97,7 +97,7 @@ echo -n ","
 echo -n "\"os\":\"$DISTRIB_ID $DISTRIB_RELEASE\" "
 
 # CPU infoの表示
-CPUINFO=`cat /proc/cpuinfo | awk -F ':' '(/model name/) || (/MIPS/) {print $2}' | sed -e "s/^ //" | sed -z "s/\n/ /"`
+CPUINFO=`cat /proc/cpuinfo | awk -F ':' '(/model name/) || (/MIPS/) {print $2}' | sed -e "s/^ //" | sed -z "s/\n/ /g"`
 echo -n ","
 echo -n "\"cpuinfo\":\"$CPUINFO\" "
 
