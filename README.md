@@ -6,7 +6,9 @@ ZYNQ Linuxの時計、NTP同期、CPUの使用率、メモリ使用量、ディ�
 
 [<img src="./doc/image1.png" alt="ZYNQ Adminの画面" width="320">](./doc/image1.png)
 
-再利用がしやすいように、非常に質素なデザインとシンプルなJavaScriptで作られています。このWeb画面にお好みのCSSを適用したりして、お客様のシステムに組み込んで使ってください。
+再利用がしやすいように、非常に質素なデザインとシンプルなJavaScriptで作られています。
+
+このWeb画面にお好みのCSSを適用したりして、お客様のシステムに組み込んで使ってください。
 
 ## 動作環境
 Ubuntu 14.04LTS または Ubuntu 18.04LTSが動作しているZYNQ Linux
