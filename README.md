@@ -1,4 +1,4 @@
-# ZYNQ Admin
+# ZYNQ Admin Panel
 ## これはなに？
 このツールはZYNQで動くLinuxのシステム管理をWeb経由で行えるようにするものです。
 
